@@ -10,18 +10,32 @@ const navLinks = [
   { label: 'Contact', href: '#contact' },
 ]
 
+function getActiveSection() {
+  const viewportMid = window.scrollY + window.innerHeight / 2
+  for (let i = navLinks.length - 1; i >= 0; i--) {
+    const id = navLinks[i].href.slice(1)
+    const el = document.getElementById(id)
+    if (el) {
+      const top = el.offsetTop
+      const bottom = top + el.offsetHeight
+      if (viewportMid >= top && viewportMid <= bottom) return navLinks[i].href
+    }
+  }
+  return '#home'
+}
+
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [atHome, setAtHome] = useState(true)
+  const [activeSection, setActiveSection] = useState('#home')
 
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 24)
-      setAtHome(window.scrollY < 120)
+      setActiveSection(getActiveSection())
     }
     window.addEventListener('scroll', onScroll)
-    setAtHome(window.scrollY < 120)
+    setActiveSection(getActiveSection())
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
@@ -37,25 +51,26 @@ export default function Navbar() {
         </a>
 
         <ul className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className={`px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 relative ${
-                  link.href === '#home' && atHome
-                    ? 'text-white/80'
-                    : 'text-white hover:text-white hover:bg-white/5'
-                }`}
-                style={
-                  link.href === '#home' && atHome
-                    ? { boxShadow: `inset 0 -2px 0 0 ${HOME_ACCENT}, 0 0 20px ${HOME_ACCENT}25` }
-                    : undefined
-                }
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.href
+            return (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className={`px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 relative ${
+                    isActive ? 'text-white' : 'text-white/80 hover:text-white hover:bg-white/5'
+                  }`}
+                  style={
+                    isActive
+                      ? { boxShadow: `inset 0 -2px 0 0 ${HOME_ACCENT}, 0 0 20px ${HOME_ACCENT}25` }
+                      : undefined
+                  }
+                >
+                  {link.label}
+                </a>
+              </li>
+            )
+          })}
         </ul>
 
         <button
@@ -80,17 +95,23 @@ export default function Navbar() {
         }`}
       >
         <ul className="border-t border-white/10 bg-black/95 backdrop-blur-md px-4 py-4 flex flex-col gap-0.5">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className="block py-3 px-3 rounded-xl text-white hover:bg-white/5 transition-colors duration-200"
-                onClick={() => setOpen(false)}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.href
+            return (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className={`block py-3 px-3 rounded-xl transition-colors duration-200 ${
+                    isActive ? 'text-white bg-white/10' : 'text-white/80 hover:bg-white/5 hover:text-white'
+                  }`}
+                  style={isActive ? { boxShadow: `inset 0 -2px 0 0 ${HOME_ACCENT}` } : undefined}
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </a>
+              </li>
+            )
+          })}
         </ul>
       </div>
     </nav>

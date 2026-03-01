@@ -236,3 +236,109 @@
 .animate-in {
   animation: fadeInUp 0.35s ease-out forwards;
 }
+
+/* Home / Hero section entrance */
+@keyframes heroImageIn {
+  from { opacity: 0; transform: translateX(-32px) scale(0.97); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes heroTextIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scrollBounce {
+  0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+  50% { opacity: 0.7; transform: translateX(-50%) translateY(6px); }
+}
+.hero-anim-image {
+  opacity: 0;
+  animation: heroImageIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.hero-anim-text {
+  opacity: 0;
+  animation: heroTextIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.hero-anim-text-delay-1 { animation-delay: 0.15s; }
+.hero-anim-text-delay-2 { animation-delay: 0.25s; }
+.hero-anim-text-delay-3 { animation-delay: 0.35s; }
+.hero-anim-text-delay-4 { animation-delay: 0.45s; }
+.hero-anim-text-delay-5 { animation-delay: 0.55s; }
+.hero-anim-text-delay-6 { animation-delay: 0.65s; }
+.hero-anim-text-delay-7 { animation-delay: 0.75s; }
+.hero-anim-text-delay-8 { animation-delay: 0.85s; }
+.hero-scroll-bounce {
+  animation: scrollBounce 2.5s ease-in-out infinite;
+}
+
+/* About section — photo and content stagger when card is revealed */
+.about-card .about-photo-wrap {
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.15s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+.about-card.reveal-ready .about-photo-wrap {
+  opacity: 1;
+  transform: scale(1);
+}
+.about-card .about-content-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.about-card.reveal-ready .about-content-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.about-card.reveal-ready .about-content-in.about-delay-1 { transition-delay: 0.08s; }
+.about-card.reveal-ready .about-content-in.about-delay-2 { transition-delay: 0.16s; }
+.about-card.reveal-ready .about-content-in.about-delay-3 { transition-delay: 0.24s; }
+.about-card.reveal-ready .about-content-in.about-delay-4 { transition-delay: 0.32s; }
+.about-card.reveal-ready .about-content-in.about-delay-5 { transition-delay: 0.4s; }
+
+/* About tab content fade when switching */
+.about-tab-panel {
+  animation: aboutTabFade 0.35s ease-out;
+}
+@keyframes aboutTabFade {
+  from { opacity: 0.6; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Skills section — header and subsections stagger when in view */
+.skills-section .skills-header {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.skills-section.skills-in-view .skills-header {
+  opacity: 1;
+  transform: translateY(0);
+}
+.skills-section .skills-subtitle {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+}
+.skills-section.skills-in-view .skills-subtitle {
+  opacity: 1;
+  transform: translateY(0);
+}
+.skills-section .skills-subsection-title {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.skills-section.skills-in-view .skills-subsection-title { opacity: 1; transform: translateY(0); }
+.skills-section.skills-in-view .skills-subsection-title:nth-of-type(1) { transition-delay: 0.12s; }
+.skills-section.skills-in-view .skills-subsection-title:nth-of-type(2) { transition-delay: 0.2s; }
+.skills-section.skills-in-view .skills-subsection-title:nth-of-type(3) { transition-delay: 0.28s; }
+.skills-section.skills-in-view .skills-subsection-title:nth-of-type(4) { transition-delay: 0.36s; }
+.skills-section .skills-carousel-wrap {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.4s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.4s;
+}
+.skills-section.skills-in-view .skills-carousel-wrap {
+  opacity: 1;
+  transform: translateY(0);
+}

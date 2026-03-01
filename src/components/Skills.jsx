@@ -97,7 +97,7 @@ function SkillIcon({ item, size = 'md', accent, showLabel = true }) {
   const abbr = getAbbr(item.name)
   const isBootstrapSvg = src && src.includes('bootstrap-icons')
   const sizeClasses = size === 'sm' ? 'w-8 h-8' : 'w-10 h-10 sm:w-11 sm:h-11'
-  const boxClasses = `flex-shrink-0 ${sizeClasses} rounded-lg flex items-center justify-center overflow-hidden border transition-colors hover:bg-white/5`
+  const boxClasses = `flex-shrink-0 ${sizeClasses} rounded-lg flex items-center justify-center overflow-hidden border transition-all duration-300 hover:bg-white/5 hover:scale-105`
   const boxStyle = {
     borderColor: `${accent}50`,
     backgroundColor: 'rgba(0,0,0,0.3)',
@@ -144,7 +144,7 @@ function SkillCard({ group, accent, isInView, index }) {
   const gridCols = itemCount <= 2 ? 'grid-cols-2' : itemCount <= 4 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3'
   return (
     <div
-      className={`rounded-2xl border p-5 sm:p-6 transition-all duration-300 flex flex-col min-h-[200px] hover:border-opacity-80 reveal-stagger ${isInView ? 'reveal-ready' : ''}`}
+      className={`rounded-2xl border p-5 sm:p-6 transition-all duration-500 ease-out flex flex-col min-h-[200px] hover:border-opacity-80 hover:scale-[1.02] hover:shadow-xl reveal-stagger ${isInView ? 'reveal-ready' : ''}`}
       style={{
         backgroundColor: '#141414',
         borderColor: `${accent}50`,
@@ -202,7 +202,7 @@ export default function Skills() {
   return (
     <section
       id="skills"
-      className="min-h-screen py-16 sm:py-20 lg:py-24 px-4 sm:px-6 bg-black relative overflow-hidden"
+      className={`skills-section min-h-screen py-16 sm:py-20 lg:py-24 px-4 sm:px-6 bg-black relative overflow-hidden ${isInView ? 'skills-in-view' : ''}`}
       ref={ref}
     >
       <div
@@ -214,15 +214,15 @@ export default function Skills() {
       />
 
       <div className="max-w-6xl mx-auto w-full relative">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 tracking-tight text-center">
+        <h2 className="skills-header text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 tracking-tight text-center">
           Expertise & Technologies
         </h2>
-        <p className="text-white/50 text-sm sm:text-base text-center mb-10 sm:mb-12 max-w-xl mx-auto">
+        <p className="skills-subtitle text-white/50 text-sm sm:text-base text-center mb-10 sm:mb-12 max-w-xl mx-auto">
           Technical skills and tools I work with daily.
         </p>
 
         {/* Technical Skills */}
-        <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-5 flex items-center gap-2">
+        <h3 className="skills-subsection-title text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-5 flex items-center gap-2">
           <span className="w-1 h-5 rounded-full" style={{ backgroundColor: HOME_ACCENT }} />
           Technical Skills
         </h3>
@@ -239,7 +239,7 @@ export default function Skills() {
         </div>
 
         {/* Soft Skills */}
-        <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-5 flex items-center gap-2">
+        <h3 className="skills-subsection-title text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-5 flex items-center gap-2">
           <span className="w-1 h-5 rounded-full" style={{ backgroundColor: HOME_ACCENT }} />
           Soft Skills
         </h3>
@@ -255,12 +255,12 @@ export default function Skills() {
         </div>
 
         {/* Tech Stack Overview */}
-        <h3 className="text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-5 flex items-center gap-2">
+        <h3 className="skills-subsection-title text-lg sm:text-xl font-semibold text-white/90 mb-4 sm:mb-5 flex items-center gap-2">
           <span className="w-1 h-5 rounded-full" style={{ backgroundColor: HOME_ACCENT }} />
           Tech Stack Overview
         </h3>
         <div
-          className="rounded-2xl border p-3 sm:p-4 flex items-center gap-2 sm:gap-4"
+          className="skills-carousel-wrap rounded-2xl border p-3 sm:p-4 flex items-center gap-2 sm:gap-4"
           style={{
             backgroundColor: '#0d0d0d',
             borderColor: `${HOME_ACCENT}30`,
@@ -270,7 +270,7 @@ export default function Skills() {
             type="button"
             onClick={() => scroll(-1)}
             aria-label="Scroll left"
-            className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center text-white hover:bg-white/10 disabled:opacity-25 disabled:pointer-events-none transition-colors"
+            className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center text-white hover:bg-white/10 hover:scale-110 disabled:opacity-25 disabled:pointer-events-none transition-all duration-300"
             style={{ borderColor: `${HOME_ACCENT}60` }}
             disabled={!canScrollLeft}
           >
@@ -287,7 +287,7 @@ export default function Skills() {
             {allTechItems.map((item) => (
               <div
                 key={item.name}
-                className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl border transition-colors hover:bg-white/5"
+                className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-300 hover:bg-white/5 hover:scale-105"
                 style={{
                   borderColor: `${HOME_ACCENT}40`,
                   backgroundColor: 'rgba(255,255,255,0.03)',
@@ -304,7 +304,7 @@ export default function Skills() {
             type="button"
             onClick={() => scroll(1)}
             aria-label="Scroll right"
-            className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center text-white hover:bg-white/10 disabled:opacity-25 disabled:pointer-events-none transition-colors"
+            className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center text-white hover:bg-white/10 hover:scale-110 disabled:opacity-25 disabled:pointer-events-none transition-all duration-300"
             style={{ borderColor: `${HOME_ACCENT}60` }}
             disabled={!canScrollRight}
           >

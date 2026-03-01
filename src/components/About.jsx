@@ -31,7 +31,7 @@ export default function About() {
 
       <div className="max-w-6xl mx-auto w-full relative">
         <div
-          className={`rounded-[20px] overflow-hidden border transition-all duration-500 reveal-up ${isInView ? 'reveal-ready' : ''}`}
+          className={`about-card rounded-[20px] overflow-hidden border transition-all duration-500 reveal-up ${isInView ? 'reveal-ready' : ''}`}
           style={{
             backgroundColor: 'rgba(12, 12, 12, 0.9)',
             borderColor: 'rgba(255,255,255,0.06)',
@@ -42,7 +42,7 @@ export default function About() {
             {/* Left: image */}
             <div className="md:col-span-2 relative min-h-[280px] sm:min-h-[360px] md:min-h-[420px] flex items-center justify-center p-6 sm:p-8 md:p-10 bg-[#0d0d0d]">
               <div
-                className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full flex items-center justify-center overflow-hidden border-2 flex-shrink-0 transition-shadow duration-300 hover:shadow-lg"
+                className="about-photo-wrap w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full flex items-center justify-center overflow-hidden border-2 flex-shrink-0 transition-shadow duration-300 hover:shadow-lg"
                 style={{
                   borderColor: `${HOME_ACCENT}70`,
                   boxShadow: `0 0 0 1px ${HOME_ACCENT}30`,
@@ -63,7 +63,7 @@ export default function About() {
 
             {/* Right: content */}
             <div className="md:col-span-3 p-6 sm:p-8 lg:p-10 flex flex-col justify-center">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="about-content-in about-delay-1 flex items-center gap-2 mb-2">
                 <span
                   className="w-1 h-6 rounded-full flex-shrink-0"
                   style={{ backgroundColor: HOME_ACCENT }}
@@ -72,11 +72,11 @@ export default function About() {
                   About
                 </p>
               </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-[1.75rem] font-bold text-white tracking-tight mb-4">
+              <h2 className="about-content-in about-delay-2 text-2xl sm:text-3xl lg:text-[1.75rem] font-bold text-white tracking-tight mb-4">
                 About Me
               </h2>
 
-              <div className="space-y-3 text-white/75 text-sm sm:text-base leading-relaxed mb-6 max-w-xl">
+              <div className="about-content-in about-delay-3 space-y-3 text-white/75 text-sm sm:text-base leading-relaxed mb-6 max-w-xl">
                 <p>
                   Third-year IT undergraduate at the <strong className="text-white">University of Kelaniya</strong>, focused on full stack development and cloud technologies.
                 </p>
@@ -86,13 +86,13 @@ export default function About() {
               </div>
 
               {/* Tabs — pill style */}
-              <div className="flex flex-wrap gap-2 mb-5">
+              <div className="about-content-in about-delay-4 flex flex-wrap gap-2 mb-5">
                 {TABS.map((tab) => (
                   <button
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
-                    className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0d0d] focus-visible:ring-white/30"
+                    className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0d0d] focus-visible:ring-white/30"
                     style={{
                       backgroundColor: activeTab === tab.id ? `${HOME_ACCENT}25` : 'rgba(255,255,255,0.04)',
                       border: `1px solid ${activeTab === tab.id ? `${HOME_ACCENT}50` : 'rgba(255,255,255,0.08)'}`,
@@ -106,12 +106,13 @@ export default function About() {
 
               {/* Tab content — contained panel */}
               <div
-                className="rounded-xl border p-5 sm:p-6 min-h-[200px] transition-all duration-300"
+                className="about-content-in about-delay-5 rounded-xl border p-5 sm:p-6 min-h-[200px] transition-all duration-300"
                 style={{
                   backgroundColor: 'rgba(0,0,0,0.25)',
                   borderColor: 'rgba(255,255,255,0.06)',
                 }}
               >
+                <div key={activeTab} className="about-tab-panel">
                 {activeTab === 'education' && (
                   <div className="space-y-5">
                     <div className="flex gap-4">
@@ -227,6 +228,7 @@ export default function About() {
                     </a>
                   </div>
                 )}
+                </div>
               </div>
             </div>
           </div>

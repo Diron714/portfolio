@@ -16,7 +16,7 @@ export default function Hero() {
           {/* LEFT: Character Image */}
           <div className="relative w-full lg:w-1/2 flex justify-center items-center order-1">
             {/* The Portrait — shows placeholder if image fails to load */}
-            <div className="relative z-10 w-[280px] sm:w-[360px] lg:w-[420px] min-h-[280px] sm:min-h-[360px] lg:min-h-[360px] flex items-center justify-center">
+            <div className="hero-anim-image relative z-10 w-[280px] sm:w-[360px] lg:w-[420px] min-h-[280px] sm:min-h-[360px] lg:min-h-[360px] flex items-center justify-center">
               {!imgError ? (
                 <img
                   src={HERO_IMAGE}
@@ -37,30 +37,30 @@ export default function Hero() {
 
           {/* RIGHT: Text Content */}
           <div className="w-full lg:w-1/2 text-left order-2">
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4">
+            <h1 className="hero-anim-text hero-anim-text-delay-1 text-5xl md:text-7xl font-bold tracking-tight mb-4">
               <span className="text-white">Hi, I'm </span>
               <span style={{ color: HOME_ACCENT }}>Diron</span>
             </h1>
             
-            <p className="text-xl md:text-2xl mb-4">
+            <p className="hero-anim-text hero-anim-text-delay-2 text-xl md:text-2xl mb-4">
               <span className="text-white/60">I'm a </span>
               <span style={{ color: HOME_ACCENT }} className="font-medium">Software Engineer</span>
               <span className="text-white/60"> | </span>
               <span className="text-white/60">UI/UX Designer</span>
             </p>
             
-            <p className="text-white/70 text-lg max-w-lg mb-10 leading-relaxed">
+            <p className="hero-anim-text hero-anim-text-delay-3 text-white/70 text-lg max-w-lg mb-10 leading-relaxed">
               I build scalable systems and user-focused interfaces. Backend & secure APIs, 
               with a strong eye for clean UI/UX.
             </p>
 
             {/* Social Icons */}
-            <div className="flex gap-4 mb-10">
+            <div className="hero-anim-text hero-anim-text-delay-4 flex gap-4 mb-10">
               <a
                 href="https://www.linkedin.com/in/diron2002/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-full border border-white/20 text-white hover:bg-white/10 transition-all"
+                className="p-3 rounded-full border border-white/20 text-white hover:bg-white/10 hover:scale-110 transition-all duration-300"
                 aria-label="LinkedIn"
               >
                 <FiLinkedin size={20} />
@@ -69,7 +69,7 @@ export default function Hero() {
                 href="https://github.com/Diron714"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-full border border-white/20 text-white hover:bg-white/10 transition-all"
+                className="p-3 rounded-full border border-white/20 text-white hover:bg-white/10 hover:scale-110 transition-all duration-300"
                 aria-label="GitHub"
               >
                 <FiGithub size={20} />
@@ -77,17 +77,17 @@ export default function Hero() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-5">
+            <div className="hero-anim-text hero-anim-text-delay-5 flex flex-wrap gap-5">
               <a
                 href="#projects"
-                className="px-8 py-3 rounded-full text-white border-2 font-semibold transition-all hover:bg-white hover:text-black"
+                className="px-8 py-3 rounded-full text-white border-2 font-semibold transition-all duration-300 hover:bg-white hover:text-black hover:scale-105 hover:shadow-lg"
                 style={{ borderColor: HOME_ACCENT }}
               >
                 View Projects
               </a>
               <a
                 href="#contact"
-                className="px-8 py-3 rounded-full text-white border-2 font-semibold transition-all hover:bg-white hover:text-black"
+                className="px-8 py-3 rounded-full text-white border-2 font-semibold transition-all duration-300 hover:bg-white hover:text-black hover:scale-105 hover:shadow-lg"
                 style={{ borderColor: HOME_ACCENT }}
               >
                 Contact Me
@@ -98,7 +98,7 @@ export default function Hero() {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+      <div className="hero-scroll-bounce absolute bottom-10 left-1/2 -translate-x-1/2">
         <span className="text-white/30 text-xs tracking-[0.4em] uppercase font-light">Scroll</span>
       </div>
     </section>

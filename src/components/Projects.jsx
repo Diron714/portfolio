@@ -135,7 +135,7 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="min-h-screen py-24 sm:py-28 lg:py-32 px-4 sm:px-6 bg-[#050505] relative overflow-hidden"
+      className="min-h-screen pt-24 sm:pt-28 lg:pt-32 pb-6 sm:pb-8 lg:pb-10 px-4 sm:px-6 bg-[#050505] relative overflow-hidden"
       ref={ref}
     >
       {/* Subtle radial fade at bottom */}
