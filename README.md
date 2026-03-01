@@ -1,4 +1,4 @@
-# Portfolio — Kevin | Software Engineer & UI/UX
+# Portfolio — Diron | Software Engineer & UI/UX
 
 Single-page portfolio (MERN-style): React + Vite + Tailwind frontend, Express + MongoDB backend for contact form.
 
