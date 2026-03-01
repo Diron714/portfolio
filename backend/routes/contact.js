@@ -2,6 +2,7 @@ import express from 'express'
 import rateLimit from 'express-rate-limit'
 import { body, validationResult } from 'express-validator'
 import Contact from '../models/Contact.js'
+import { sendEmail } from '../utils/email.js'
 
 const router = express.Router()
 const ADMIN_KEY = process.env.ADMIN_KEY || ''
@@ -35,24 +36,19 @@ router.get('/test-email', async (req, res) => {
       hint: 'Set SMTP_HOST, SMTP_USER, SMTP_PASS (and CONTACT_EMAIL) in backend/.env',
     })
   }
+  if (!to) {
+    return res.status(400).json({
+      ok: false,
+      error: 'No recipient',
+      hint: 'Set CONTACT_EMAIL or SMTP_USER in backend/.env',
+    })
+  }
   try {
-    const nodemailer = (await import('nodemailer')).default
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT || 587,
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-      tls: { rejectUnauthorized: false },
-    })
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
-      to: to || process.env.SMTP_USER,
-      subject: 'Portfolio SMTP test',
-      text: 'This is a test email from your portfolio backend. SMTP is working.',
-    })
+    await sendEmail(
+      to,
+      'Portfolio SMTP test',
+      'This is a test email from your portfolio backend. SMTP is working.'
+    )
     res.json({ ok: true, message: 'Test email sent. Check your inbox (and spam).' })
   } catch (err) {
     console.error('Test email failed:', err)
@@ -93,29 +89,18 @@ router.post(
       // 1. Save to DB first (most important)
       const doc = await Contact.create({ name, email, message })
 
-      // 2. Try sending email when SMTP is configured (dev or production) – don't block success on failure
-      if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+      // 2. Try sending email when SMTP is configured – don't block success on failure
+      const contactTo = process.env.CONTACT_EMAIL || process.env.SMTP_USER
+      if (contactTo) {
         try {
-          const nodemailer = (await import('nodemailer')).default
-          const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT || 587,
-            secure: process.env.SMTP_SECURE === 'true',
-            auth: {
-              user: process.env.SMTP_USER,
-              pass: process.env.SMTP_PASS,
-            },
-            tls: { rejectUnauthorized: false },
-          })
-          await transporter.sendMail({
-            from: process.env.SMTP_FROM || process.env.SMTP_USER,
-            to: process.env.CONTACT_EMAIL || process.env.SMTP_USER,
-            subject: `Portfolio: Message from ${name}`,
-            text: `From: ${email}\n\n${message}`,
-          })
+          await sendEmail(
+            contactTo,
+            `Portfolio: Message from ${name}`,
+            `From: ${email}\n\n${message}`
+          )
         } catch (emailErr) {
           console.error('Email send failed:', emailErr)
-          // Still return success – message is saved
+          // Still return success – message is saved in DB
         }
       }
 
