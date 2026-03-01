@@ -29,10 +29,13 @@ export default function Contact() {
       setTimeout(() => setFormState('idle'), 3000)
     } catch (err) {
       setFormState('error')
-      const msg = err.response?.data?.error || err.response?.data?.message || err.message || 'Network error. Check VITE_API_URL and CORS.'
+      let msg = err.response?.data?.error || err.response?.data?.message || err.message || 'Request failed.'
+      if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+        msg = 'Cannot reach server. Check: (1) VITE_API_URL on Vercel = your Render URL, (2) FRONTEND_URL on Render = your Vercel URL, (3) Backend is live (try /api/health).'
+      }
       setErrorMessage(typeof msg === 'string' ? msg : 'Request failed')
-      console.error(msg)
-      setTimeout(() => { setFormState('idle'); setErrorMessage('') }, 4000)
+      console.error(err.response?.status, err.response?.data, err.message)
+      setTimeout(() => { setFormState('idle'); setErrorMessage('') }, 6000)
     }
   }
 

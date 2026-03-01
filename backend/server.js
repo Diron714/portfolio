@@ -18,11 +18,18 @@ app.use(express.json({ limit: '10kb' }))
 // Security headers
 app.use(helmet())
 
-// CORS – no credentials needed for this portfolio
+// CORS – allow frontend (trim trailing slash) and any *.vercel.app
+const frontendOrigin = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '')
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true)
+      if (origin === frontendOrigin) return callback(null, true)
+      if (origin.endsWith('.vercel.app')) return callback(null, true)
+      callback(null, false)
+    },
     methods: ['GET', 'POST'],
+    credentials: false,
   })
 )
 
