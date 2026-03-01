@@ -3,7 +3,7 @@ import axios from 'axios'
 import { FiGithub, FiLinkedin, FiMail } from 'react-icons/fi'
 import { useInView } from '../hooks/useInView'
 
-const API_URL = import.meta.env.VITE_API_URL || ''
+const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
 const HOME_ACCENT = '#CC4D4D'
 
 export default function Contact() {
@@ -22,20 +22,37 @@ export default function Contact() {
       return
     }
     setFormState('loading')
+    const payload = {
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      message: formData.message.trim(),
+    }
     try {
-      await axios.post(`${API_URL}/api/contact`, formData)
+      await axios.post(`${API_URL}/api/contact`, payload, { timeout: 90000 })
       setFormState('success')
       setFormData({ name: '', email: '', message: '' })
       setTimeout(() => setFormState('idle'), 3000)
     } catch (err) {
       setFormState('error')
-      let msg = err.response?.data?.error || err.response?.data?.message || err.message || 'Request failed.'
+      const status = err.response?.status
+      const serverMsg = err.response?.data?.error || err.response?.data?.message
+      let msg = serverMsg || err.message || 'Request failed.'
       if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
-        msg = 'Cannot reach server. Check: (1) VITE_API_URL on Vercel = your Render URL, (2) FRONTEND_URL on Render = your Vercel URL, (3) Backend is live (try /api/health).'
+        msg = `Network error (CORS or backend down?). Backend: ${API_URL.replace(/\/$/, '')} — Set VITE_API_URL on Vercel and FRONTEND_URL on Render, then redeploy both.`
+      } else if (status === 404) {
+        msg = `Backend returned 404. Check VITE_API_URL is correct: ${API_URL || '(not set)'}`
+      } else if (status === 429) {
+        msg = 'Too many requests. Wait a few minutes and try again.'
+      } else if (status >= 500) {
+        msg = `Server error (${status}). Check Render logs. ${serverMsg ? String(serverMsg) : ''}`
+      } else if (status === 400) {
+        msg = serverMsg ? String(serverMsg) : `Bad request (${status}). Check form data.`
+      } else if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+        msg = 'Request timed out. The server may be waking up (free tier). Try again in 30 seconds — it should be faster the second time.'
       }
       setErrorMessage(typeof msg === 'string' ? msg : 'Request failed')
-      console.error(err.response?.status, err.response?.data, err.message)
-      setTimeout(() => { setFormState('idle'); setErrorMessage('') }, 6000)
+      console.error('[Contact]', status, err.response?.data, err.code, err.message)
+      setTimeout(() => { setFormState('idle'); setErrorMessage('') }, 8000)
     }
   }
 
@@ -160,7 +177,7 @@ export default function Contact() {
                       e.currentTarget.style.boxShadow = `0 4px 24px ${HOME_ACCENT}35`
                     }}
                   >
-                    {formState === 'loading' && 'Sending...'}
+                    {formState === 'loading' && 'Sending... (first time may take up to 60s)'}
                     {formState === 'success' && 'Message sent ✓'}
                     {formState === 'error' && 'Try again'}
                     {formState === 'idle' && 'Send message'}

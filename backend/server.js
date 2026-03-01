@@ -28,7 +28,8 @@ app.use(
       if (origin.endsWith('.vercel.app')) return callback(null, true)
       callback(null, false)
     },
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
     credentials: false,
   })
 )
