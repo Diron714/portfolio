@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { FiGithub, FiLinkedin, FiMail } from 'react-icons/fi'
 import { useInView } from '../hooks/useInView'
@@ -11,6 +11,12 @@ export default function Contact() {
   const [formState, setFormState] = useState('idle')
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
   const [errorMessage, setErrorMessage] = useState('')
+
+  // Wake backend when Contact section is visible (helps with Render free-tier cold start)
+  useEffect(() => {
+    if (!API_URL || !isInView) return
+    axios.get(`${API_URL}/api/health`, { timeout: 15000 }).catch(() => {})
+  }, [API_URL, isInView])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -28,7 +34,10 @@ export default function Contact() {
       message: formData.message.trim(),
     }
     try {
-      await axios.post(`${API_URL}/api/contact`, payload, { timeout: 90000 })
+      await axios.post(`${API_URL}/api/contact`, payload, {
+        timeout: 90000,
+        headers: { 'Content-Type': 'application/json' },
+      })
       setFormState('success')
       setFormData({ name: '', email: '', message: '' })
       setTimeout(() => setFormState('idle'), 3000)
@@ -38,7 +47,7 @@ export default function Contact() {
       const serverMsg = err.response?.data?.error || err.response?.data?.message
       let msg = serverMsg || err.message || 'Request failed.'
       if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
-        msg = `Network error (CORS or backend down?). Backend: ${API_URL.replace(/\/$/, '')} — Set VITE_API_URL on Vercel and FRONTEND_URL on Render, then redeploy both.`
+        msg = `Cannot reach backend (${API_URL || 'not set'}). Set VITE_API_URL on Vercel to your Render URL (https://....onrender.com) and FRONTEND_URL on Render to your Vercel URL, then redeploy both.`
       } else if (status === 404) {
         msg = `Backend returned 404. Check VITE_API_URL is correct: ${API_URL || '(not set)'}`
       } else if (status === 429) {

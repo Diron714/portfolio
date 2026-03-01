@@ -119,6 +119,14 @@ app.use((_, res) => {
   res.status(404).json({ error: 'Not found' })
 })
 
+// Global error handler – always JSON so CORS and frontend get a proper response
+app.use((err, _req, res, _next) => {
+  console.error('Server error:', err)
+  if (!res.headersSent) {
+    res.status(500).json({ error: 'Something went wrong. Try again later.' })
+  }
+})
+
 // Start server first so /api/health works even if DB is slow or down (e.g. Render cold start)
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
