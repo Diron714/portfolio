@@ -37,13 +37,12 @@ git push origin main
    | `MONGO_URI` | Your MongoDB Atlas connection string (e.g. `mongodb+srv://user:pass@cluster.mongodb.net/portfolio?retryWrites=true&w=majority`) |
    | `ADMIN_KEY` | Your secret admin key (same as local, or a new strong password) |
    | `FRONTEND_URL` | Your frontend URL – **set this after Part 2** (e.g. `https://your-portfolio.vercel.app`) |
-   | `SMTP_HOST` | `smtp.gmail.com` (if using Gmail) |
-   | `SMTP_PORT` | `587` |
-   | `SMTP_SECURE` | `false` |
-   | `SMTP_USER` | Your Gmail address |
-   | `SMTP_PASS` | Your Gmail App Password |
-   | `SMTP_FROM` | Your Gmail address |
-   | `CONTACT_EMAIL` | Where to receive contact emails |
+   | **Email (recommended on Render)** | |
+   | `SENDGRID_API_KEY` | Your SendGrid API key ([sendgrid.com](https://sendgrid.com)) |
+   | `EMAIL_FROM` | Your verified sender email in SendGrid (e.g. `louisdiron2002@gmail.com`) |
+   | `CONTACT_EMAIL` | Where to receive contact form messages (can be same as `EMAIL_FROM`) |
+
+   **Why SendGrid on Render:** Render blocks direct SMTP (ports 25/587), so SMTP often times out. SendGrid uses HTTPS (port 443) and works reliably. For local dev you can still use SMTP (see `backend/env.example`).
 
    You can add `FRONTEND_URL` later and then **Manual Deploy** → **Clear build cache & deploy** so CORS works.
 

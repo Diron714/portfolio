@@ -23,7 +23,7 @@ export default function Contact() {
     setErrorMessage('')
     if (!API_URL) {
       setFormState('error')
-      setErrorMessage('Backend not configured. Set VITE_API_URL to enable the form.')
+      setErrorMessage('Backend not configured. Local: add VITE_API_URL=http://localhost:5000 to .env in project root and restart dev server. Deploy: set VITE_API_URL on Vercel to your Render URL.')
       setTimeout(() => { setFormState('idle'); setErrorMessage('') }, 4000)
       return
     }

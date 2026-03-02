@@ -22,35 +22,47 @@ router.get('/contact', async (req, res) => {
   }
 })
 
-// GET /api/test-email — send a test email (admin only). Use ?key=YOUR_ADMIN_KEY to check if SMTP works.
+// GET /api/test-email — send a test email (admin only). Use ?key=YOUR_ADMIN_KEY to check if email works.
 router.get('/test-email', async (req, res) => {
   const key = req.query.key || req.get('X-Admin-Key') || ''
   if (!ADMIN_KEY || key !== ADMIN_KEY) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
-  const to = process.env.CONTACT_EMAIL || process.env.SMTP_USER
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  const emailConfigured =
+    (process.env.SENDGRID_API_KEY && process.env.EMAIL_FROM) ||
+    (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS)
+  const to = process.env.CONTACT_EMAIL || process.env.EMAIL_FROM || process.env.SMTP_USER
+  if (!emailConfigured) {
     return res.status(400).json({
       ok: false,
-      error: 'SMTP not configured',
-      hint: 'Set SMTP_HOST, SMTP_USER, SMTP_PASS (and CONTACT_EMAIL) in backend/.env',
+      error: 'Email not configured',
+      hint: 'Set SENDGRID_API_KEY + EMAIL_FROM (recommended on Render) or SMTP_HOST, SMTP_USER, SMTP_PASS',
     })
   }
   if (!to) {
     return res.status(400).json({
       ok: false,
       error: 'No recipient',
-      hint: 'Set CONTACT_EMAIL or SMTP_USER in backend/.env',
+      hint: 'Set CONTACT_EMAIL, EMAIL_FROM, or SMTP_USER in backend/.env',
     })
   }
   try {
     await sendEmail(
       to,
-      'Portfolio SMTP test',
-      'This is a test email from your portfolio backend. SMTP is working.'
+      'Portfolio test email',
+      'This is a test email from your portfolio backend. Email is working.'
     )
     res.json({ ok: true, message: 'Test email sent. Check your inbox (and spam).' })
   } catch (err) {
+    const msg = err.response?.body?.errors?.[0]?.message || err.message
+    const isSenderNotVerified = err.code === 403 && /verified Sender Identity/i.test(msg)
+    if (isSenderNotVerified) {
+      return res.status(400).json({
+        ok: false,
+        error: 'Sender not verified in SendGrid',
+        hint: 'In SendGrid go to Settings → Sender Authentication → verify the email set in EMAIL_FROM. See SENDGRID_403_FIX.md',
+      })
+    }
     console.error('Test email failed:', err)
     res.status(500).json({
       ok: false,
@@ -89,8 +101,8 @@ router.post(
       // 1. Save to DB first (most important)
       const doc = await Contact.create({ name, email, message })
 
-      // 2. Try sending email when SMTP is configured – don't block success on failure
-      const contactTo = process.env.CONTACT_EMAIL || process.env.SMTP_USER
+      // 2. Try sending email when SendGrid or SMTP is configured – don't block success on failure
+      const contactTo = process.env.CONTACT_EMAIL || process.env.EMAIL_FROM || process.env.SMTP_USER
       if (contactTo) {
         try {
           await sendEmail(
@@ -99,7 +111,8 @@ router.post(
             `From: ${email}\n\n${message}`
           )
         } catch (emailErr) {
-          console.error('Email send failed:', emailErr)
+          const isSender403 = emailErr.code === 403 && /verified Sender Identity/i.test(emailErr.response?.body?.errors?.[0]?.message || '')
+          if (!isSender403) console.error('Email send failed:', emailErr.message)
           // Still return success – message is saved in DB
         }
       }
